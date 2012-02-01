@@ -3,6 +3,33 @@
 <head>
   <meta http-equiv="Content-type" content="text/html; charset=utf-8">
   <title>jQuery Music Preview</title>
+  <style>
+    body {
+      font-family: monaco;
+    }
+    .wrapper {
+      margin: 0 auto;
+      width: 500px;
+    }
+    label {
+      display: block;
+      float: left;
+      width: 150px;
+      margin: 0 0 10px 0;
+      line-height: 22px;
+    }
+    input {
+      display: block;
+      float: left;
+      width: 300px;
+      margin: 0 0 10px 0;
+      font-size: 16px;
+    }
+    
+    form div {
+      clear: both;
+    }
+  </style>
   <script src="https://www.google.com/jsapi?key="></script>
   <script>
     google.load("jquery", "1");
@@ -34,22 +61,23 @@
   </script> 
 </head>
 <body id="" class="">
-  <h1>jQuery Music Preview</h1>
-  <p>Type in an artist name &amp; song title and click the button.</p>
-  <p>Open your browser console to see some feedback.</p>
-  <p>Try "Lady Gaga" - "Born This Way" or "Peter Van Hoesen" - "Into Entropy"</p>
-  <form action="" method="get" accept-charset="utf-8">
-    <div>
-      <label for="artist">Artist:</label> <input type="text" name="artist" value="" id="artist">
-    </div>
-    <div>
-      <label for="title">Title:</label> <input type="text" name="title" value="" id="title">
-    </div>
-    <button type="submit">Listen preview</button>
-  </form>
+  <div class="wrapper">
+    <h1>jQuery Music Preview</h1>
+    <p>Type in an artist name &amp; song title and click the button.</p>
+    <p>Open your browser console to see some feedback.</p>
+    <p>Try "Lady Gaga" - "Born This Way" <br>or "Peter Van Hoesen" - "Into Entropy"</p>
+    <form action="" method="get" accept-charset="utf-8">
+      <div>
+        <label for="artist">Artist:</label> <input type="text" name="artist" value="" id="artist">
+      </div>
+      <div>
+        <label for="title">Title:</label> <input type="text" name="title" value="" id="title">
+      </div>
+      <button type="submit">Listen preview</button>
+    </form>
+
+    <div id="jplayer"></div>
+  </div>
   
-  <div id="jplayer"></div>
-
-
 </body>
 </html>
