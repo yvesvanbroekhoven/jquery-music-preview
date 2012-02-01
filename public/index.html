@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>jQuery Music Preview</title>
+  <script src="https://www.google.com/jsapi?key="></script>
+  <script>
+    google.load("jquery", "1");
+  </script>
+  <script src="javascripts/jquery-music-preview.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="javascripts/jquery.jplayer.min.js" type="text/javascript" charset="utf-8"></script>
+  <script>
+    $(function(){
+      
+      var $jplayer = $('#jplayer');
+
+      $jplayer.jPlayer({
+        swfPath: '/swf'
+      , supplied: 'mp3'
+      , ready: function(){
+        $(this).addClass('ready');
+      }
+      , play: function(event){
+        console.log(event);
+      }
+      });
+      
+      $('form').submit(function(event){
+        event.preventDefault();
+        $.musicPreview($('#artist').val(), $('#title').val());
+      });
+      
+    });
+  </script> 
+</head>
+<body id="" class="">
+  <h1>jQuery Music Preview</h1>
+  <p>Type in an artist name &amp; song title and click the button.</p>
+  <p>Open your browser console to see some feedback.</p>
+  <p>Try "Lady Gaga" - "Born This Way" or "Peter Van Hoesen" - "Into Entropy"</p>
+  <form action="" method="get" accept-charset="utf-8">
+    <div>
+      <label for="artist">Artist:</label> <input type="text" name="artist" value="" id="artist">
+    </div>
+    <div>
+      <label for="title">Title:</label> <input type="text" name="title" value="" id="title">
+    </div>
+    <button type="submit">Listen preview</button>
+  </form>
+  
+  <div id="jplayer"></div>
+
+
+</body>
+</html>
