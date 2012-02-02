@@ -1,7 +1,7 @@
 /*
  * Author: Yves Van Broekhoven
  * Created at: 2012-02-01
- * Version: 0.0.2
+ * Version: 1.0.0
  * API docs: http://developer.echonest.com/
  * jPlayer docs: http://jplayer.org/
  *
@@ -43,7 +43,6 @@
   
     // Success: Echnonest request
     jxhr.success(function(data){
-      console.log(data);
       _onSuccess.call(dfd, data);
     });
   
