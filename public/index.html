@@ -54,7 +54,16 @@
       
       $('form').submit(function(event){
         event.preventDefault();
-        $.musicPreview($('#artist').val(), $('#title').val());
+        $.when($.musicPreview($('#artist').val(), $('#title').val()))
+         .then(function(data){
+           $jplayer.jPlayer('setMedia', {
+             mp3: data.preview_url
+           });
+           $jplayer.jPlayer('play');
+         })
+         .fail(function(data){
+           console.log("failed", data);
+         });
       });
       
     });

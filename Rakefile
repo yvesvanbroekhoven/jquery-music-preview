@@ -7,3 +7,8 @@ task :watch do
     end
   end
 end
+
+task :build do
+  relative = 'jquery-music-preview.js'
+  sh "closure --js #{relative} --js_output_file ./public/javascripts/#{relative.gsub(".js",".min.js")}"
+end

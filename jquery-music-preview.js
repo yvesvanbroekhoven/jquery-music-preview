@@ -1,83 +1,112 @@
 /*
  * Author: Yves Van Broekhoven
  * Created at: 2012-02-01
- * Version: 0.0.1
+ * Version: 0.0.2
+ * API docs: http://developer.echonest.com/
+ * jPlayer docs: http://jplayer.org/
+ *
+ * @example
+ *   $.musicPreview('lady gaga', 'born this way');
+ * 
  */
 (function($){
   
-  var _onSuccess
-  ,   _onError
-  ,   _initPlayer
+  var api_key   = 'QNR9YFKVAPUN3PGLL'
+  ,   url       = 'http://developer.echonest.com/api/v4/song/search?api_key={{api_key}}&format=json&results=1&artist={{artist}}&title={{title}}&bucket=id:7digital-US&bucket=audio_summary&bucket=tracks'
+  ,   response  = {}
   ;
-  
+
+  var _onSuccess
+  ;
+
   $.musicPreview = function(artist, title){
-
+  
+    var dfd = $.Deferred();
+  
+    // Error: artist required
     if (artist === undefined || artist == '') {
-      console.log('Artist name required');
-      return;
+      return dfd.reject(response.artist_required);
     }
-
+  
+    // Error: song title required
     if (title === undefined || title == '') {
-      console.log('Song title required');
-      return;
+      return dfd.reject(response.title_required);
     }
-    
-    if ($.jPlayer === undefined) {
-      console.log('This plugin requires jPlayer: http://www.jplayer.org');
-    }
-
-    var api_key = 'QNR9YFKVAPUN3PGLL'
-    ,   url     = 'http://developer.echonest.com/api/v4/song/search?api_key={{api_key}}&format=json&results=1&artist={{artist}}&title={{title}}&bucket=id:7digital-US&bucket=audio_summary&bucket=tracks'
-    ;
-
-    url = url.replace('{{api_key}}', api_key)
-             .replace('{{artist}}', artist)
-             .replace('{{title}}', title);
-
-    var jxhr = $.getJSON(url);
-    
-    jxhr.success(_onSuccess);
-    jxhr.error(_onError);
-
-  };
   
-  _onSuccess = function(data){
-    console.log(data);
-    
-    if (data.response.songs.length <= 0) {
-      console.log("No songs found");
-      return;
-    }
-    
-    if (data.response.songs[0].tracks === undefined) {
-      console.log("No preview found");
-      return;
-    }
-    
-    var preview_url = data.response.songs[0].tracks[0].preview_url
-    ,   $jplayer    = $('#jplayer.ready');
-    ;
-    
-    if ($jplayer.length <= 0) {
-      console.log("Player not ready");
-      return;
-    }
-    
-    $jplayer.jPlayer('setMedia', {
-      mp3: preview_url
+    // Echonest request
+    var api_url = url.replace('{{api_key}}', api_key)
+                     .replace('{{artist}}', artist)
+                     .replace('{{title}}', title);
+  
+    var jxhr = $.getJSON(api_url);
+  
+  
+    // Success: Echnonest request
+    jxhr.success(function(data){
+      console.log(data);
+      _onSuccess.call(dfd, data);
     });
-
-    $jplayer.jPlayer('play');
-    
+  
+    // Error: Echnonest request
+    jxhr.error(function(data){
+      dfd.reject($.extend({}, response.request_error, { data: data }));
+    });
+  
+    return dfd.promise();
   };
+
+
+  _onSuccess = function(data){
   
-  _onError = function(data){
-    console.log(data);
-  }
+    // Error: No songs found
+    if (data.response.songs.length <= 0) {
+      return this.reject(response.no_songs_found);
+    }
   
-  _initPlayer = function(preview_url){
-    
-    
-  }
+    // Error: No preview found
+    if (data.response.songs[0].tracks === undefined || data.response.songs[0].tracks.length <= 0) {
+      return this.reject(response.no_preview_found);
+    }
+  
+    // Success: preview found
+    var preview_url = data.response.songs[0].tracks[0].preview_url;
+    return this.resolve($.extend({}, response.success, { preview_url: preview_url }));
+  
+  };
+
+  response = {
+  
+    artist_required: {
+      status:   'error'
+    , message:  'Artist required'
+    },
+  
+    title_required: {
+      status:   'error'
+    , message:  'Song title required'
+    },
+  
+    requeset_error: {
+      status:   'error'
+    , message:  'Can not connect to Echonest API'
+    },
+  
+    no_songs_found: {
+      status:   'error'
+    , message:  'No soungs found'
+    },
+  
+    no_preview_found: {
+      status:   'error'
+    , message:  'No preview found'
+    },
+  
+    success: {
+      status:   'success'
+    , message:  'Preview found'
+    }
+  
+  };
+
   
 }(jQuery));
